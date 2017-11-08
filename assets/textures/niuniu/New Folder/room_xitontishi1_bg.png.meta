@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "68fd5d9f-d6f5-475c-89b4-df675d495aa6",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "room_xitontishi1_bg": {
+      "ver": "1.0.3",
+      "uuid": "65895489-c5ad-4e73-970e-e4d817fd1b56",
+      "rawTextureUuid": "68fd5d9f-d6f5-475c-89b4-df675d495aa6",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0.5,
+      "offsetY": -0.5,
+      "trimX": 22,
+      "trimY": 1,
+      "width": 245,
+      "height": 37,
+      "rawWidth": 288,
+      "rawHeight": 38,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

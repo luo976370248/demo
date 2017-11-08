@@ -1,0 +1,139 @@
+var proto_man = require("proto_man");
+
+var websocket = {
+    sock: null, 
+    serivces_handler: null,
+    proto_type: 0,
+    is_connected: false,
+
+    // 心跳包ID
+    heart_beat_id: null,
+    // 心跳检测的间隔时间
+    heart_beat_time: 10,
+    // 心跳检测的的未连接的次数
+    heart_beat_num: 0,
+    // 是否已经开启了心跳检测
+    is_start_heart_beat: false,
+    cache_send_cmd: [],
+
+
+
+    _on_opened: function(event) {
+        console.log("ws connect server success");
+        this.is_connected = true;
+        if (this.cache_send_cmd.length  > 0) {
+            let cache = this.cache_send_cmd[0];
+            this.send_cmd(cache[0], cache[1], cache[2]);
+            this.cache_send_cmd = [];
+        }
+   
+    }, 
+
+    // 开启心跳检测
+    _start_check_heart_beat() {
+        // if (this.is_start_heart_beat) {
+        //     return;
+        // }
+
+        // this.is_start_heart_beat = true;
+
+        // this._stop_check_heart_beat();
+        
+        // this.heart_beat_id = setInterval(() => {
+        //     this.send_cmd(2, 4);
+        // }, this.heart_beat_time * 1000);
+    },
+
+
+    // 停止心跳检测
+    _stop_check_heart_beat() {
+        clearInterval(this.heart_beat_id);
+        this.heart_beat_id = null;
+    },
+    
+    _on_recv_data: function(event) {
+        var str_or_buf = event.data;
+        if (!this.serivces_handler) {
+            return;
+        }
+        
+        var cmd = proto_man.decode_cmd(this.proto_type, str_or_buf);
+        if (!cmd) {
+            return;
+        }
+        
+        var stype = cmd[0];
+        var ctype = cmd[1];
+
+        if (stype === 2 && ctype === 4) {
+            // 收到心跳包，心跳包处理在此处理
+            console.log("收到心跳包处理");
+            this._start_check_heart_beat();
+        }
+
+        if (this.serivces_handler[stype]) {
+            this.serivces_handler[stype](cmd[0], cmd[1], cmd[2]);
+        }
+    }, 
+    
+    _on_socket_close: function(event) {
+        if (this.sock) {
+            this.close();
+        }
+    }, 
+    
+    _on_socket_err: function(event) {
+        this.close();
+    }, 
+    
+    connect: function(url, proto_type) {
+        this.sock = new WebSocket(url);
+        this.sock.binaryType = "arraybuffer";
+
+        this.sock.onopen = this._on_opened.bind(this);
+        this.sock.onmessage = this._on_recv_data.bind(this);
+        this.sock.onclose = this._on_socket_close.bind(this);
+        this.sock.onerror = this._on_socket_err.bind(this);
+        
+        this.proto_type = proto_type;
+    },
+       
+    send_cmd: function(stype, ctype, body) {
+        if (!this.sock || !this.is_connected) {
+            // 重新连接 socket
+            let cache = [];
+            cache[0] = stype;
+            cache[1] = ctype;
+            cache[2] = body;
+            this.cache_send_cmd.push(cache);
+            websocket.connect("ws://127.0.0.1:6081/ws", proto_man.PROTO_JSON);
+            return;
+        }
+        console.log(`stype:${stype}, ctype:${ctype}, body:${body}`);
+        var buf = proto_man.encode_cmd(this.proto_type, stype, ctype, body);
+        
+        this.sock.send(buf);
+        this._start_check_heart_beat();
+    },
+
+    
+    close: function() {
+        this.is_connected = false;
+        this._stop_check_heart_beat();
+        if (this.sock !== null) {
+            this.sock.close();
+            this.sock = null;
+        }
+    }, 
+    
+    register_serivces_handler: function(serivces_handler) {
+        this.serivces_handler = serivces_handler;
+    },
+}
+
+
+// websocket.connect("ws://127.0.0.1:6081/ws", proto_man.PROTO_JSON);
+// websocket.connect("ws://127.0.0.1:6081/ws", proto_man.PROTO_BUF);
+
+module.exports = websocket;
+
