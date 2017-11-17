@@ -23,6 +23,15 @@ var Cmd = {
 		BACK_ROOM: 3, // 返回房间
 		READY: 4, // 玩家准备
 		GAME_BEGIN: 5,// 游戏开始
+		SNATCH_BLANK_START: 6, // 开始抢庄
+		SNATCH_BLANK: 7, // 抢庄
+		SNATCH_BLANK_END: 8, //抢庄结果
+		SELECT_MULTIPLE_START: 9, // 开始倍数选择
+		SELECT_MULTIPLE: 10, // 倍数选择
+		SELECT_MULTIPLE_END: 11,// 倍数选择完成
+		GAME_RESULT: 12, //游戏结果
+		GAME_RESTART: 13, // 游戏重新开始
+		ENTER_ZONE: 14, // 进入区间
 	}
 };
 

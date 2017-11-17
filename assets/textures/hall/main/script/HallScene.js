@@ -40,6 +40,13 @@ cc.Class({
             let new_node = cc.instantiate(prefab);
             this.node.addChild(new_node);
         }.bind(this));
+    },
+
+    _onBtnGoldNiuNiuTouchEnd(sender) {
+        bb.loader.loadRes('hall/selectSession/selectNiuSession', cc.Prefab, function(prefab) {
+            let new_node = cc.instantiate(prefab);
+            this.node.addChild(new_node);
+        }.bind(this));
     }
   
 });

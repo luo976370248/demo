@@ -39,6 +39,8 @@ const HallEvent = cc.Class({
     onMsgEvent(event, data) {
         switch(event) {
             case bb.room.EventName.JOIN_ROOM_SUCCESS: {
+                // 绑定协议
+                bb['niu_proto'] = require('niu_proto');
                 bb.scene.getInstance().runScene("niugame");
                 break;
             }

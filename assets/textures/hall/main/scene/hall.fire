@@ -1353,7 +1353,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "niuniu_1",
+    "_name": "_btnGoldNiuNiu",
     "_objFlags": 0,
     "_parent": {
       "__id__": 32

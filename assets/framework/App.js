@@ -21,6 +21,7 @@ function initExtend() {
 }
 
 function initLib() {
+    addLib('log', 'AppLog');
     addLib('ui', 'UIKiller');
     addLib('loader', 'LoaderKiller');
     addLib('scene', 'utils_scene');
