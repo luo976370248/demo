@@ -1,3 +1,4 @@
+const NConstant = require('./NConstant');
 
 const NiuEventName = {
     "JOIN_ROOM_SUCCESS": "JOIN_ROOM_SUCCESS",
@@ -7,6 +8,13 @@ const NiuEventName = {
     "START_GAME": "START_GAME",
     "SNATCH_BLANK_START": "SNATCH_BLANK_START",
     "SNATCH_BLANK": "SNATCH_BLANK",
+    "SNATCH_BLANK_RESULT": "SNATCH_BLANK_RESULT",
+    "SELECT_MULTIPLE_START": "SELECT_MULTIPLE_START",
+    "SELECT_MULTIPLE": "SELECT_MULTIPLE",
+    "SELECT_MULTIPLE_RESULT": "SELECT_MULTIPLE_RESULT",
+    "START_CALCULATE_CATTLE": "START_CALCULATE_CATTLE",
+    "CALCULATE_CATTLE": "CALCULATE_CATTLE",
+    "CALCULATE_CATTLE_RESULT": "CALCULATE_CATTLE_RESULT",
 }
 
 const NiuEvent = cc.Class({
@@ -22,8 +30,9 @@ var NiuRoomModule = {
     banks: -1,
     multiple: -1,
     playerList: [],
-    blank_list: [],
-
+    blankUidlist: [], // 同等级的抢庄玩家
+    playGameList: [], // 在游戏中的玩家列表
+    blankUid: -1, // 庄家的UID
     // 进入房间
     setJoinRoom(data) {
         if (data[0] != bb.respones.OK) {
@@ -34,6 +43,8 @@ var NiuRoomModule = {
         this.player_count = data[2];
         this.room_type = data[3]
         this.gameState = data[5];
+        this.playGameList = data[6];
+        this.blankUid = data[7]
         this.playerList = [];
         data[4].forEach((item, index) => {
             if (item) {
@@ -43,9 +54,11 @@ var NiuRoomModule = {
                 p['sex'] = item[2];
                 p['face'] = item[3];
                 p['gold'] = item[4];
-                p['room_card'] = item[5];
+                p['multiple'] = item[5];
                 p['ready'] = item[6];
                 p['online'] = item[7];
+                p['cardList'] = item[8];
+                p['bate'] = item[9];
                 this.playerList.push(p);
             } else {
                 this.playerList.push(null);
@@ -55,8 +68,10 @@ var NiuRoomModule = {
 
         this.sortPlayerLocalSeat();
     
-        NiuRoomModule.Event.notifyEvent(NiuEventName.JOIN_ROOM_SUCCESS);
+        NiuRoomModule.Event.addCache(NiuEventName.JOIN_ROOM_SUCCESS);
+        // NiuRoomModule.Event.notifyEvent();
     },
+
 
     // 准备
     // [uid, ready]
@@ -72,18 +87,51 @@ var NiuRoomModule = {
 
     // 游戏开始
     setStartGame(data) {
-        this.gameState = 2;
-        NiuRoomModule.Event.notifyEvent(NiuEventName.START_GAME, data);
+        NiuRoomModule.Event.addCache(NiuEventName.START_GAME);
+        // NiuRoomModule.Event.notifyEvent(NiuEventName.START_GAME, data);
     },
 
+    // 开始抢庄
     setStartRobZhuang(data) {
-        this.gameState = 3;
-        NiuRoomModule.Event.notifyEvent(NiuEventName.SNATCH_BLANK_START, data);
+        this.gameState = NConstant.GAME_STATE.SNATCH_BLANK;
+        NiuRoomModule.Event.addCache(NiuEventName.SNATCH_BLANK_START, data);
+       //  NiuRoomModule.Event.notifyEvent(NiuEventName.SNATCH_BLANK_START, data);
     },
 
+    // 抢庄
     setRobZhuang(data) {
         this.blank_list = data;
         NiuRoomModule.Event.notifyEvent(NiuEventName.SNATCH_BLANK, data);
+    },
+
+    // 抢庄结束
+    setRobZhuangEnd(data) {
+        // [庄家，同等级的抢庄玩家]
+        this.blankUid = data[0];
+        this.blankUidlist = data[1];
+        NiuRoomModule.Event.addCache(NiuEventName.SNATCH_BLANK_RESULT);
+    },
+
+    // 开始选择倍数
+    selectMultipleStart() {
+        this.gameState = NConstant.GAME_STATE.SELECT_MULTIPLE;
+        NiuRoomModule.Event.addCache(NiuEventName.SELECT_MULTIPLE_START);
+    },
+
+    // 选择倍数
+    selectMultiple(body) {
+        // [uid, 倍数]
+        let p = bb.room.getPlayerInfoByUid(body[0])
+        p['bate'] = body[2];
+        NiuRoomModule.Event.addCache(NiuEventName.SELECT_MULTIPLE, body);
+    },
+
+    // 开始算牛
+    startCalculateCattle() {
+        this.gameState = NConstant.GAME_STATE.SUAN_NIU;
+        
+        NiuRoomModule.Event.addCache(NiuEventName.START_CALCULATE_CATTLE);
+        // 
     },
 
     getPlayerInfoByUid(uid) {

@@ -2,7 +2,7 @@ var Cmd = {
 	// 全局的命令号，当我们的用户丢失链接的时候，
 	// 所有的服务都会收到网关转发过来的这个时间这个消息
 	USER_DISCONNECT: 10000, 
-
+	BROADCAST: 10001, //广播服务
 	Auth: {
 		GUEST_LOGIN: 1, // 游客登陆
 		RELOGIN: 2, // 账号在另外的地方登陆
@@ -29,9 +29,12 @@ var Cmd = {
 		SELECT_MULTIPLE_START: 9, // 开始倍数选择
 		SELECT_MULTIPLE: 10, // 倍数选择
 		SELECT_MULTIPLE_END: 11,// 倍数选择完成
-		GAME_RESULT: 12, //游戏结果
-		GAME_RESTART: 13, // 游戏重新开始
-		ENTER_ZONE: 14, // 进入区间
+		START_CALCULATE_CATTLE: 12,
+		CALCULATE_CATTLE: 13,
+		CALCULATE_CATTLE_RESULT: 14,
+		GAME_RESULT: 15, //游戏结果
+		GAME_RESTART: 16, // 游戏重新开始
+		ENTER_ZONE: 17, // 进入区间
 	}
 };
 

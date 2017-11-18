@@ -4,8 +4,10 @@
  */
 const EventManager = cc.Class({
     properties: {
-        eventManager: null,
-        observer_list: null,
+        eventManager: null, 
+        observer_list: null, // 观察者列表
+        protocol_list:null, // 协议列表
+        is_cache:null, // 是否需要缓存协议
     },
 
     statics: {
@@ -23,6 +25,8 @@ const EventManager = cc.Class({
 
     ctor() {
         this.observer_list = [];
+        this.protocol_list = [];
+        this.is_cache = false;
     },
 
     /**
@@ -85,6 +89,44 @@ const EventManager = cc.Class({
             }
         });
     },
+
+
+    addCache:function (name, data) {
+        if(name){
+            this.protocol_list.push({name:name,data:data});
+        }else{
+            console.log("协议缓存 数据为空");
+        }
+        if( !this.is_cache && this.protocol_list.length == 1){
+            console.log("无需缓存协议, 直接调用notifyProtocol()...");
+
+            this.notify();
+            console.log("notifyProtocol end.");
+        } else {
+            console.warn(`已缓存协议ID:${name} (当前缓存队列长度:${this.protocol_list.length}) is_cache=${this.is_cache}`);
+        }
+    },
+   
+    notify:function (TAG) {
+        var list = this.protocol_list.shift();
+        if(list){
+           console.log(`[${TAG}] notifyProtocol >>> is_cache=${this.is_cache}, 执行下一条 缓存协议ID:${list.name}`);
+           this.notifyEvent(list.name,list.data);
+        }else{
+            console.log(`${TAG}] notifyProtocol >>> 协议缓存队列为空, 忽略.`);
+        }
+    },
+
+    notifyCache:function (TAG) {
+        this.is_cache = false;
+        this.notify(TAG);
+    },
+
+    clearCache: function() {
+        this.is_cache = false;
+        this.protocol_list = [];
+    },
+    
 });
 
 module.exports = EventManager;

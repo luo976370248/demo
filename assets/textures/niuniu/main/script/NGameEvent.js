@@ -19,7 +19,7 @@ const NGameEvent = cc.Class({
         this.target = target;
         var services_handlers = {};
         services_handlers[bb.stype.NiuNiu] = this.on_niu_server_return.bind(this);
-       //  services_handlers[bb.stype.HALL] = this.on_niu_server_return.bind(this);
+        //  services_handlers[bb.stype.HALL] = this.on_niu_server_return.bind(this);
         bb.net.register_serivces_handler(services_handlers);
         bb.room.Event.addObserver(this);
     },
@@ -48,28 +48,38 @@ const NGameEvent = cc.Class({
                 bb.room.setRobZhuang(body);
                 break;
             case bb.cmd.NiuNiu.SNATCH_BLANK_END:
-                bb.room.setRobZhuang(body);
+                bb.room.setRobZhuangEnd(body);
                 bb.log.info('[牛牛] 收到服务器 抢庄结果 的消息')
-              
+
                 break;
             case bb.cmd.NiuNiu.SELECT_MULTIPLE_START:
                 bb.log.info('[牛牛] 收到服务器 开始倍数选择 的消息')
-                
+                bb.room.selectMultipleStart();
                 break;
             case bb.cmd.NiuNiu.SELECT_MULTIPLE:
                 bb.log.info('[牛牛] 收到服务器 倍数选择 的消息')
-       
+                bb.room.selectMultiple(body);
                 break;
             case bb.cmd.NiuNiu.SELECT_MULTIPLE_END:
-                bb.log.info('[牛牛] 收到服务器 倍数选择完成 的消息')
-               
+                bb.log.info('[牛牛] 收到服务器 倍数选择完成 的消息');
+                bb.room.selectMultipleResult(body);
+                break;
+            case bb.cmd.NiuNiu.START_CALCULATE_CATTLE:
+                bb.log.info('[牛牛] 收到服务器 开始算牛 的消息')
+                bb.room.startCalculateCattle();
+                break;
+            case bb.cmd.NiuNiu.CALCULATE_CATTLE:
+                bb.log.info('[牛牛] 收到服务器 计算有没有牛 的消息')
+                break;
+            case bb.cmd.NiuNiu.CALCULATE_CATTLE_RESULT:
+                bb.log.info('[牛牛] 收到服务器 算牛阶段完成 的消息')
                 break;
             case bb.cmd.NiuNiu.GAME_RESULT:
                 bb.log.info('[牛牛] 收到服务器 游戏结果 的消息')
-               
+
                 break;
             case bb.cmd.NiuNiu.GAME_RESTART:
-                bb.log.info('[牛牛] 收到服务器 游戏重新开始 的消息')
+                bb.log.info('[牛牛] 收到服务器 游戏重新开始 的消息');
 
                 break;
 
@@ -110,12 +120,33 @@ const NGameEvent = cc.Class({
                 this.target.robZhuang(data[0], data[1]);
                 break;
             }
-            case bb.room.EventName.SNATCH_BLANK_END: {
+            case bb.room.EventName.SNATCH_BLANK_RESULT: {
                 // 抢庄
-                this.target.robZhuangEnd();
+                this.target.robZhuangResult();
                 break;
             }
+            case bb.room.EventName.SELECT_MULTIPLE_START: {
+                this.target.selectMultipleStart();
+                break;
+            }
+            case bb.room.EventName.SELECT_MULTIPLE: {
+                this.target.selectMultiple(data[0], data[1]);
+                break;
+            }
+            case bb.room.EventName.START_CALCULATE_CATTLE: {
+                this.target.startCalculateCattle();
+                break;
+            }
+
+            // case bb.room.EventName.SELECT_MULTIPLE: {
+            //     this.target.selectMultiple(data[0], data[1]);
+            //     break;
+            // }
+
+
+            // 
         }
+
     }
 
 });
