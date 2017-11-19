@@ -1,0 +1,15 @@
+info face="DS-Digital" size=-20 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=5,3,10,3 spacing=1,1 outline=0
+common lineHeight=22 base=18 scaleW=300 scaleH=60 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="font_8.png"
+chars count=11
+char id=43   x=0     y=0     width=18    height=37    xoffset=-3    yoffset=-5    xadvance=12    page=0  chnl=15
+char id=48   x=38    y=0     width=17    height=37    xoffset=-3    yoffset=-5    xadvance=11    page=0  chnl=15
+char id=49   x=182   y=0     width=12    height=37    xoffset=-3    yoffset=-5    xadvance=7     page=0  chnl=15
+char id=50   x=56    y=0     width=17    height=37    xoffset=-3    yoffset=-5    xadvance=11    page=0  chnl=15
+char id=51   x=74    y=0     width=17    height=37    xoffset=-3    yoffset=-5    xadvance=11    page=0  chnl=15
+char id=52   x=19    y=0     width=18    height=37    xoffset=-3    yoffset=-5    xadvance=11    page=0  chnl=15
+char id=53   x=92    y=0     width=17    height=37    xoffset=-3    yoffset=-5    xadvance=11    page=0  chnl=15
+char id=54   x=110   y=0     width=17    height=37    xoffset=-3    yoffset=-5    xadvance=11    page=0  chnl=15
+char id=55   x=128   y=0     width=17    height=37    xoffset=-3    yoffset=-5    xadvance=11    page=0  chnl=15
+char id=56   x=146   y=0     width=17    height=37    xoffset=-3    yoffset=-5    xadvance=11    page=0  chnl=15
+char id=57   x=164   y=0     width=17    height=37    xoffset=-3    yoffset=-5    xadvance=11    page=0  chnl=15
