@@ -68,10 +68,10 @@ cc.Class({
     initGameInit() {
         this["_state"].active = true;
         if (bb.room.playerList[this.index].ready) {
-            this['_state'].getComponent(cc.Label).string = "已准备";
+            this['_state'].getComponent(cc.Sprite).spriteFrame = bb.ngame.getSpriteFrame("ok");
         } else {
             if (this.index != 0) {
-                this['_state'].getComponent(cc.Label).string = "未准备";
+                this['_state'].getComponent(cc.Sprite).spriteFrame = bb.ngame.getSpriteFrame("wait");
             } else {
                 this["_state"].active = false;
             }
@@ -84,17 +84,17 @@ cc.Class({
         switch (bb.room.playerList[this.index].multiple) {
             case NConstant.SNATCH_BLANK.BLANK:
                 this["_state"].active = true;
-                this['_state'].getComponent(cc.Label).string = "抢庄";
+                this['_state'].getComponent(cc.Sprite).spriteFrame = bb.ngame.getSpriteFrame("qiang");
                 this.showCaradBack();
                 break;
             case NConstant.SNATCH_BLANK.NOT_BLANK:
                 this["_state"].active = true;
-                this['_state'].getComponent(cc.Label).string = "不抢";
+                this['_state'].getComponent(cc.Sprite).spriteFrame = bb.ngame.getSpriteFrame("buqiang");
                 this.showCaradBack();
                 break;
             case NConstant.SNATCH_BLANK.SUPER_BLANK:
                 this["_state"].active = true;
-                this['_state'].getComponent(cc.Label).string = "超级抢庄";
+                this['_state'].getComponent(cc.Sprite).spriteFrame = bb.ngame.getSpriteFrame("qiang");
                 this.showCaradBack();
                 break;
             default:
@@ -140,7 +140,7 @@ cc.Class({
     setReady(ready) {
         if (ready) {
             this['_state'].active = true;
-            this['_state'].getComponent(cc.Label).string = "已准备";
+            this['_state'].getComponent(cc.Sprite).spriteFrame = bb.ngame.getSpriteFrame("ok");
         }
     },
 
@@ -181,11 +181,11 @@ cc.Class({
     snatchBlank(rob) {
         this['_state'].active = true;
         if (rob == NConstant.SNATCH_BLANK.BLANK) {
-            this['_state'].getComponent(cc.Label).string = "抢庄";
+            this['_state'].getComponent(cc.Sprite).spriteFrame = bb.ngame.getSpriteFrame("qiang");
         } else if (rob == NConstant.SNATCH_BLANK.NOT_BLANK) {
-            this['_state'].getComponent(cc.Label).string = "不抢";
+            this['_state'].getComponent(cc.Sprite).spriteFrame = bb.ngame.getSpriteFrame("buqiang");
         } else if (rob == NConstant.SNATCH_BLANK.SUPER_BLANK) {
-            this['_state'].getComponent(cc.Label).string = "超级抢庄";
+            this['_state'].getComponent(cc.Sprite).spriteFrame = bb.ngame.getSpriteFrame("qiang");
         }
 
     },
@@ -204,9 +204,29 @@ cc.Class({
 
     showIconZhuang(flag) {
         this["_iconZhuang"].active = flag;
+    },
+
+    // 初始化 5 张牌
+    showCard(cardList) {
+        cardList.forEach((item, index) => {
+            // 花色
+            let color = item & NConstant.LOGIC_MASK_COLOR;
+            // 值
+            let value = item & NConstant.LOGIC_MASK_VALUE;
+        })
+        debugger;
+    },
+
+    _onCardTouchEnd(sender) {
+        if (this.index != 0) {
+            return;
+        }
+
+        if (bb.gameState != NConstant.GAME_STATE.SUAN_NIU) {
+            return;
+        }
+        console.log('...........');
     }
-
-
 
 
 });

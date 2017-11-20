@@ -68,6 +68,10 @@ const NGameEvent = cc.Class({
                 bb.log.info('[牛牛] 收到服务器 开始算牛 的消息')
                 bb.room.startCalculateCattle();
                 break;
+            case bb.cmd.NiuNiu.SHOW_CARD:
+                bb.log.info('[牛牛] 收到服务器 自己显示牌的消息 的消息')
+                bb.room.showCard(body);
+                break;
             case bb.cmd.NiuNiu.CALCULATE_CATTLE:
                 bb.log.info('[牛牛] 收到服务器 计算有没有牛 的消息')
                 break;
@@ -136,6 +140,9 @@ const NGameEvent = cc.Class({
             case bb.room.EventName.START_CALCULATE_CATTLE: {
                 this.target.startCalculateCattle();
                 break;
+            }
+            case bb.room.EventName.SHOW_CARD: {
+                this.target.showCard(data[0], data[1]);
             }
 
             // case bb.room.EventName.SELECT_MULTIPLE: {

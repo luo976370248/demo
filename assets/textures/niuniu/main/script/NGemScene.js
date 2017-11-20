@@ -8,21 +8,22 @@ cc.Class({
     },
 
     // use this for initialization
-    onLoad () {
-        bb.ui.bindComponent(this); 
-
+    onLoad() {
+        bb.ui.bindComponent(this);
         // 加载资源
         NGameEvent.getInstance().initEvent(this);
         bb.room.Event.is_cache = true;
-        bb.loader.loadRes("niuniu/Player/Player5", cc.Prefab, function(prefab) {
-            let new_node = cc.instantiate(prefab);
-            this.node.addChild(new_node);
-            new_node.children.forEach((item, index) => {
-                this[`_player${index + 1}`] = item;
-            })
-            this.initRoom();
+        bb.loader.loadStaticRes("niuniu/texture2/ngame", cc.SpriteAtlas, function (asset) {
+            bb["ngame"] = asset;
+            bb.loader.loadRes("niuniu/Player/Player5", cc.Prefab, function (prefab) {
+                let new_node = cc.instantiate(prefab);
+                this.node.addChild(new_node);
+                new_node.children.forEach((item, index) => {
+                    this[`_player${index + 1}`] = item;
+                })
+                this.initRoom();
+            }.bind(this));
         }.bind(this));
-    
     },
     initRoom() {
         if (bb.room.gameState == NConstant.GAME_STATE.INIT && !bb.room.playerList[0].ready) {
@@ -35,7 +36,7 @@ cc.Class({
 
         if (bb.room.gameState == NConstant.GAME_STATE.SELECT_MULTIPLE && bb.room.playerList[0].bate < 0) {
             this.selectMultipleStart();
-            
+
         }
 
         bb.room.Event.notifyCache("初始化房间后");
@@ -46,7 +47,7 @@ cc.Class({
         for (let i = 1; i <= bb.room.player_count; i++) {
             this['_player' + i].getComponent('NPlayer').initData();
         }
-    
+
         if (bb.room.gameState == NConstant.GAME_STATE.INIT && bb.room.playerList[0].state == 1) {
             this['_btnReady'].active = true;
         }
@@ -64,13 +65,13 @@ cc.Class({
 
     // 玩家准备
     setReady(uid, ready) {
-       let idx = bb.room.getPlayerSeatByUid(uid);
-       if (idx != -1) {
+        let idx = bb.room.getPlayerSeatByUid(uid);
+        if (idx != -1) {
             this['_player' + (idx + 1)].getComponent('NPlayer').setReady(ready);
             if (idx == 0) {
                 this['_btnReady'].active = false;
             }
-       }
+        }
     },
 
     // 开始游戏
@@ -98,16 +99,16 @@ cc.Class({
         this.scheduleOnce(() => {
             bb.room.Event.notifyCache("执行发牌动画");
         }, 2);
-       
+
     },
 
-     // 开始抢庄
-     startRobZhuang() {
+    // 开始抢庄
+    startRobZhuang() {
         let robZhuang = this.node.getChildByName('RobZhuang');
         if (robZhuang) {
             robZhuang.active = true;
         } else {
-            bb.loader.loadRes('niuniu/RobZhuang/RobZhuang', cc.Prefab, function(prefab) {
+            bb.loader.loadRes('niuniu/RobZhuang/RobZhuang', cc.Prefab, function (prefab) {
                 let new_node = cc.instantiate(prefab);
                 this.node.addChild(new_node);
             }.bind(this));
@@ -118,7 +119,7 @@ cc.Class({
     robZhuang(uid, rob) {
         let idx = bb.room.getPlayerSeatByUid(uid);
         if (idx != -1) {
-             this['_player' + (idx + 1)].getComponent('NPlayer').snatchBlank(rob);
+            this['_player' + (idx + 1)].getComponent('NPlayer').snatchBlank(rob);
         }
 
         if (idx == 0) {
@@ -140,14 +141,14 @@ cc.Class({
             } else {
                 playerNodeList2.push(this[`_player${seat + 1}`]);
             }
-           
+
         })
 
         playerNodeList1 = playerNodeList1.concat(playerNodeList2);
 
         this.blankActionId = 0;
-        
-        this.schedule(function(){
+
+        this.schedule(function () {
             this.showBlankAction(playerNodeList1);
         }.bind(this), 0.3, 4 * playerNodeList1.length);
 
@@ -171,7 +172,7 @@ cc.Class({
     selectMultipleStart() {
         this.node.getChildByName('RobZhuang').active = false;
 
-        for(let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= 5; i++) {
             this[`_player${i}`].getComponent('NPlayer').initState();
         }
 
@@ -184,7 +185,7 @@ cc.Class({
         if (bataNode) {
             bataNode.active = true;
         } else {
-            bb.loader.loadRes('niuniu/Bet/Bet', cc.Prefab, function(prefab) {
+            bb.loader.loadRes('niuniu/Bet/Bet', cc.Prefab, function (prefab) {
                 let new_node = cc.instantiate(prefab);
                 this.node.addChild(new_node);
             }.bind(this));
@@ -195,17 +196,21 @@ cc.Class({
     selectMultiple(uid, bate) {
         let idx = bb.room.getPlayerSeatByUid(uid);
         if (idx != -1) {
-             this['_player' + (idx + 1)].getComponent('NPlayer').snatchBate(bate);
+            this['_player' + (idx + 1)].getComponent('NPlayer').snatchBate(bate);
         }
+        bb.room.Event.notifyCache("开始下注");
     },
 
     startCalculateCattle() {
-        this.node.getChildByName('Bet').active = false;
+        bb['niu_proto'].showCard();
+        if (this.node.getChildByName('Bet')) {
+            this.node.getChildByName('Bet').active = false;
+        }
         let calculateNode = this.node.getChildByName('CalculateCattle');
         if (calculateNode) {
             calculateNode.active = true;
         } else {
-            bb.loader.loadRes('niuniu/CalculateCattle/CalculateCattle', cc.Prefab, function(prefab) {
+            bb.loader.loadRes('niuniu/CalculateCattle/CalculateCattle', cc.Prefab, function (prefab) {
                 let new_node = cc.instantiate(prefab);
                 this.node.addChild(new_node);
             }.bind(this));
@@ -213,12 +218,20 @@ cc.Class({
         bb.room.Event.notifyCache("开始算牛");
     },
 
+    showCard(uid, cardList) {
+        let idx = bb.room.getPlayerSeatByUid(uid);
+        if (idx != -1) {
+            this['_player' + (idx + 1)].getComponent('NPlayer').showCard(cardList);
+        }
+        bb.room.Event.notifyCache("showCard");
+    },
+
     _onBtnReadyTouchEnd(sender) {
         bb['niu_proto'].ready();
     },
 
     _onBtnLeftMenuTouchEnd(sender) {
-        bb.loader.loadRes('niuniu/LeftMenu/LeftMenu', cc.Prefab, function(prefab) {
+        bb.loader.loadRes('niuniu/LeftMenu/LeftMenu', cc.Prefab, function (prefab) {
             let new_node = cc.instantiate(prefab);
             this.node.addChild(new_node);
         }.bind(this));

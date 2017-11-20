@@ -15,4 +15,6 @@ const SNATCH_BLANK = {
 module.exports = {
     GAME_STATE: GAME_STATE,
     SNATCH_BLANK: SNATCH_BLANK,
+    LOGIC_MASK_COLOR : 0xf0, // 花色掩码
+    LOGIC_MASK_VALUE : 0x0f, // 数值掩码
 }

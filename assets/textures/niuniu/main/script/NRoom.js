@@ -15,6 +15,7 @@ const NiuEventName = {
     "START_CALCULATE_CATTLE": "START_CALCULATE_CATTLE",
     "CALCULATE_CATTLE": "CALCULATE_CATTLE",
     "CALCULATE_CATTLE_RESULT": "CALCULATE_CATTLE_RESULT",
+    "SHOW_CARD": "SHOW_CARD",
 }
 
 const NiuEvent = cc.Class({
@@ -132,6 +133,14 @@ var NiuRoomModule = {
         
         NiuRoomModule.Event.addCache(NiuEventName.START_CALCULATE_CATTLE);
         // 
+    },
+
+    showCard(data) {
+        let p = this.getPlayerInfoByUid(data[0]);
+        if (p) {
+            p['cardList'] = data[1];
+        }
+        NiuRoomModule.Event.addCache(NiuEventName.SHOW_CARD, data);
     },
 
     getPlayerInfoByUid(uid) {

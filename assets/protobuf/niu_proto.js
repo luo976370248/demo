@@ -16,10 +16,16 @@ function snatchBate(data) {
     bb.net.send_cmd(bb.stype.NiuNiu, bb.cmd.NiuNiu.SELECT_MULTIPLE, [data]);
 }
 
+function showCard() {
+    // // [是否抢庄]
+    bb.net.send_cmd(bb.stype.NiuNiu, bb.cmd.NiuNiu.SHOW_CARD, []);
+}
+
 
 module.exports = {
     joinNiuNiuGoldZone: joinNiuNiuGoldZone,
     ready: ready,
     snatchBlank: snatchBlank,
     snatchBate: snatchBate,
+    showCard: showCard,
 }

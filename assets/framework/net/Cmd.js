@@ -35,6 +35,7 @@ var Cmd = {
 		GAME_RESULT: 15, //游戏结果
 		GAME_RESTART: 16, // 游戏重新开始
 		ENTER_ZONE: 17, // 进入区间
+		SHOW_CARD: 18, // 单播牌的数据
 	}
 };
 
